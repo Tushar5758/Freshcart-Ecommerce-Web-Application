@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login As</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #11998e, #38ef7d);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #2c3e50;
+        }
+        .login-option {
+            width: 100%;
+            background: transparent;
+            color: #008000;
+            padding: 12px;
+            border: 2px solid #11998e;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .login-option:hover {
+            background: #047738;
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Select Login Type</h1>
+        <button class="login-option" onclick="location.href='admin-login.html'">Login as Admin</button>
+        <button class="login-option" onclick="location.href='login.html'">Login as User</button>
+    </div>
+
+</body>
+</html>

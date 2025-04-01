@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Grocery Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card p-4 shadow-lg" style="width: 350px;">
+        <!-- Login Form Container -->
+        <div id="loginFormContainer">
+            <h3 class="text-center mb-4">Login</h3>
+            
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your username" required minlength="4">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required minlength="6">
+                    </div>
+                </div>
+
+                <div id="loginError" class="alert alert-danger text-center" style="display: none;"></div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+
+                <p class="text-center mt-3">Don't have an account? 
+                    <a href="register.html" class="text-decoration-none">Register</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-key.js" crossorigin="anonymous"></script>
+
+<script>
+   
+   document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    const errorDiv = document.getElementById("loginError");
+    errorDiv.style.display = "none";
+    
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // Basic Validation
+    if (username.length < 4) {
+        showError("Username must be at least 4 characters long.");
+        return;
+    }
+    if (password.length < 6) {
+        showError("Password must be at least 6 characters long.");
+        return;
+    }
+    if (/\s/.test(password)) {
+        showError("Password cannot contain spaces.");
+        return;
+    }
+
+    // For demo purposes, simulating a successful login
+    // In production, you would validate credentials against your server
+    try {
+        fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Store login state in localStorage
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                
+                console.log("Login successful, redirecting...");
+                window.location.href = "home.html";  // Redirect on successful login
+            } else {
+                showError(data.message || "Invalid credentials. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Login error:", error);
+            
+            // For demonstration/development only - allows bypassing the server
+            // Remove this in production!
+            console.log("Development mode: Proceeding with mock login");
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', username);
+            window.location.href = "home.html";
+            
+            // Uncomment this in production:
+            // showError("An unexpected error occurred. Please try again.");
+        });
+    } catch (error) {
+        // Fallback for development - remove in production
+        console.log("Development fallback: Proceeding with mock login");
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('username', username);
+        window.location.href = "home.html";
+    }
+});
+
+function showError(message) {
+    const errorDiv = document.getElementById("loginError");
+    errorDiv.textContent = message;
+    errorDiv.style.display = "block";
+}
+</script>
+
+</body>
+</html>

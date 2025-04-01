@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Grocery Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card p-4 shadow-lg" style="width: 400px;">
+        <h3 class="text-center mb-4">Create Account</h3>
+        
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required minlength="4">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-home"></i></span>
+                    <input type="text" id="address" class="form-control" placeholder="Enter your address" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="password" class="form-control" placeholder="Create a password" required minlength="6">
+                </div>
+            </div>
+
+            <div id="registerError" class="alert alert-danger text-center" style="display: none;"></div>
+            <div id="registerSuccess" class="alert alert-success text-center" style="display: none;"></div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+
+            <p class="text-center mt-3">Already have an account? 
+                <a href="login.html" class="text-decoration-none">Login</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-key.js" crossorigin="anonymous"></script>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        // Hide previous messages
+        document.getElementById("registerError").style.display = "none";
+        document.getElementById("registerSuccess").style.display = "none";
+        
+        // Get form values
+        const name = document.getElementById("name").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const address = document.getElementById("address").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        // Basic validation
+        if (username.length < 4) {
+            showError("Username must be at least 4 characters long.");
+            return;
+        }
+        if (password.length < 6) {
+            showError("Password must be at least 6 characters long.");
+            return;
+        }
+        if (/\s/.test(password)) {
+            showError("Password cannot contain spaces.");
+            return;
+        }
+
+        // Send registration request
+        fetch("https://freshcart-grocery.netlify.app/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, username, email, address, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "User registered successfully") {
+                showSuccess("Registration successful! Redirecting to login page...");
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+            } else {
+                showError(data.message || "Registration failed. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Registration error:", error);
+            showError("An unexpected error occurred. Please try again.");
+        });
+    });
+
+    function showError(message) {
+        const errorDiv = document.getElementById("registerError");
+        errorDiv.textContent = message;
+        errorDiv.style.display = "block";
+    }
+
+    function showSuccess(message) {
+        const successDiv = document.getElementById("registerSuccess");
+        successDiv.textContent = message;
+        successDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
